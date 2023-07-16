@@ -8,6 +8,37 @@
 		<title>Title of web page in browser window</title>
 	</head>
 	<body>
+		<script>
+			function setTaskName(task_id) {
+				var name_input = document.getElementById("task_name_id_"+task_id);
+				data_to_send = {
+					'task_id': task_id,
+					'task_name': name_input.value
+				};
+
+				fetch(`${window.origin}/set-task-name`, {
+					method: "POST",
+					credentials: "include",
+					body: JSON.stringify(data_to_send),
+					cache: "no-cache",
+					headers: new Headers({
+						"content-type": "application/json"
+					})
+				})
+				.then(function(response) {
+					if (response.status !== 200) {
+						console.log(`setTaskName response status was `+response.status);
+						return ;
+					}
+				});
+			}
+
+			function taskNameKeyDown(event, task_id) {
+				if (event.key === "Enter") {
+					setTaskName(task_id);
+				}
+			}
+		</script>
 		<div>Hello, World!</div>
 		<form action="#" method="post">
 			<p>New task:</p>
@@ -16,7 +47,7 @@
 		</form>
 		<div>
 			{% for task in tasks %}
-				<div>{{ task.name }}</div>
+			<input type="text" id="task_name_id_{{ task.id }}" value="{{ task.name }}" onblur="setTaskName({{ task.id }})" onkeydown="taskNameKeyDown(event, {{ task.id }})">
 			{% endfor %}
 		</div>
 	</body>
