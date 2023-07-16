@@ -9,6 +9,7 @@
 	</head>
 	<body>
 		<script>
+
 			function setTaskName(task_id) {
 				var name_input = document.getElementById("task_name_id_"+task_id);
 				data_to_send = {
@@ -38,6 +39,31 @@
 					setTaskName(task_id);
 				}
 			}
+
+			function setTaskDone(task_id) {
+				var done_input = document.getElementById("task_checkbox_id_"+task_id);
+				data_to_send = {
+					'task_id': task_id,
+					'task_done': done_input.checked
+				};
+
+				fetch(`${window.origin}/set-task-done`, {
+					method: "POST",
+					credentials: "include",
+					body: JSON.stringify(data_to_send),
+					cache: "no-cache",
+					headers: new Headers({
+						"content-type": "application/json"
+					})
+				})
+				.then(function(response) {
+					if (response.status !== 200) {
+						console.log(`setTaskDone response status was `+response.status);
+						return ;
+					}
+				});
+			}
+
 		</script>
 		<div>To-Do List</div>
 		<form action="#" method="post">
@@ -48,7 +74,7 @@
 		<div>
 			{% for task in tasks %}
 			<div>
-				<input type="checkbox" id="task_checkbox_id_{{ task.done }}" {{ "checked" if task.done }}>
+				<input type="checkbox" id="task_checkbox_id_{{ task.id }}" {{ "checked" if task.done }} onchange="setTaskDone({{ task.id }})">
 				<input type="text" id="task_name_id_{{ task.id }}" value="{{ task.name }}" onblur="setTaskName({{ task.id }})" onkeydown="taskNameKeyDown(event, {{ task.id }})">
 			</div>
 			{% endfor %}

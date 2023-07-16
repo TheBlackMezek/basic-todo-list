@@ -32,6 +32,19 @@ def set_task_name():
 	return res
 
 
+@app.route('/set-task-done', methods=['POST'])
+def set_task_done():
+	req = request.get_json()
+	print(f"Setting done status of task {req['task_id']} to \"{req['task_done']}\"")
+
+	task = _DB_SESSION.query(Task).filter_by(id=req['task_id']).first()
+	task.done = req['task_done']
+	_DB_SESSION.commit()
+
+	res = make_response(jsonify({"message": "Task name changed"}), 200)
+	return res
+
+
 @app.teardown_appcontext
 def shutdown_session(exception=None):
 	_DB_SESSION.remove()
