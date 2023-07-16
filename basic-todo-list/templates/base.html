@@ -39,7 +39,7 @@
 				}
 			}
 		</script>
-		<div>Hello, World!</div>
+		<div>To-Do List</div>
 		<form action="#" method="post">
 			<p>New task:</p>
 			<p><input type="text" name="task_name"/></p>
@@ -47,7 +47,10 @@
 		</form>
 		<div>
 			{% for task in tasks %}
-			<input type="text" id="task_name_id_{{ task.id }}" value="{{ task.name }}" onblur="setTaskName({{ task.id }})" onkeydown="taskNameKeyDown(event, {{ task.id }})">
+			<div>
+				<input type="checkbox" id="task_checkbox_id_{{ task.done }}" {{ "checked" if task.done }}>
+				<input type="text" id="task_name_id_{{ task.id }}" value="{{ task.name }}" onblur="setTaskName({{ task.id }})" onkeydown="taskNameKeyDown(event, {{ task.id }})">
+			</div>
 			{% endfor %}
 		</div>
 	</body>
